@@ -32,25 +32,30 @@ class Auth extends CI_Controller
         $user = $this->db->get_where('petugas', ['username' => $username])->row_array();
 
         if ($user) {
-            if (password_verify($password, $user['password'])) {
-                $data = [
-                    'username' => $user['username'],
-                    'level' => $user['level']
-                ];
-                $this->session->set_userdata($data);
+            if ($user['is_active'] == 1) {
+                if (password_verify($password, $user['password'])) {
+                    $data = [
+                        'username' => $user['username'],
+                        'level' => $user['level']
+                    ];
+                    $this->session->set_userdata($data);
 
-                if ($user['level'] == 'admin') {
-                    redirect('Admin');
+                    if ($user['level'] == 'admin') {
+                        redirect('Admin');
+                    } else if ($user['level'] == 'petugas') {
+                        redirect('Admin');
+                    }
+                } else {
+                    $this->session->set_flashdata('message', '<div class="alert alert-danger mr-3 ml-4" role="alert">
+                    Password Salah!
+                    </div>');
+                    redirect('auth');
                 }
-            } else {
-                $this->session->set_flashdata('message', '<div class="alert alert-danger mr-3 ml-4" role="alert">
-                Password Salah!
-                </div>');
             }
         } else {
-            $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">
-            Username tidak ada!
-            </div>');
+            $this->session->set_flashdata('message', '<div class="alert alert-danger mr-3 ml-4" role="alert">
+            Username tidak ada! </div>');
+            redirect('auth');
         }
     }
 
@@ -75,7 +80,9 @@ class Auth extends CI_Controller
                 'username' => htmlspecialchars($this->input->post('username')),
                 'password' => password_hash($this->input->post('password1'), PASSWORD_DEFAULT),
                 'nama_petugas' => $this->input->post('name'),
-                'level' => $this->input->post('level')
+                'level' => $this->input->post('level'),
+                'is_active' => 1,
+                'date_created' => time()
             ];
 
             $this->db->insert('petugas', $data);

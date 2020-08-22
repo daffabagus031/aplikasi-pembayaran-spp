@@ -11,6 +11,21 @@
 
     <!-- Divider -->
     <hr class="sidebar-divider">
+
+    <!-- Query -->
+    <?php
+    // $level = $this->session->userdata('level');
+    // $querymenu = "SELECT `user_menu`.`id`, `menu`
+    //             FROM `user_menu` JOIN `user_access_menu` 
+    //             ON `user_menu`.`id` = `user_access_menu`.`menu_ id`
+    //             WHERE `user_access_menu`.`level` = $level
+    //             ORDER BY `user_access_menu`.`menu_id` ASC
+    //             ";
+    // $menu = $this->db->query($querymenu)->result_array();
+    // var_dump($menu);
+    // die;
+    ?>
+
     <!-- Heading -->
     <div class="sidebar-heading">
         Menu Utama
@@ -28,7 +43,12 @@
         <div id="collapseDm" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Manajemen Data</h6>
-                <a class="collapse-item" href="buttons.html">Data Petugas</a>
+                <?php
+                $user = $this->session->userdata('level');
+                if ($user == 'admin') :
+                ?>
+                    <a class="collapse-item" href="<?= base_url('admin/datapetugas') ?>">Data Petugas</a>
+                <?php endif ?>
                 <a class="collapse-item" href="cards.html">Data Siswa</a>
             </div>
         </div>
@@ -57,9 +77,9 @@
         </a>
         <div id="collapseSet" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Custom Utilities:</h6>
-                <a class="collapse-item" href="utilities-color.html">Colors</a>
-                <a class="collapse-item" href="utilities-border.html">Borders</a>
+                <h6 class="collapse-header">Pengaturan</h6>
+                <a class="collapse-item" href="utilities-color.html">Profile</a>
+                <a class="collapse-item" href="utilities-border.html">Edit Profile</a>
                 <a class="collapse-item" href="utilities-animation.html">Animations</a>
             </div>
         </div>
